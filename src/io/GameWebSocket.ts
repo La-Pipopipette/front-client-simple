@@ -3,11 +3,13 @@ import store from '@/store'
 export default class GameWebSocket {
   private static instance: GameWebSocket
 
-  webSocket: WebSocket|undefined
-  gameId: string
+  private readonly gameId: string
+  private webSocket: WebSocket|undefined
+  private active: boolean
 
   private constructor (gameId: string) {
     this.gameId = gameId
+    this.active = true
   }
 
   public static init (gameId: string) {
@@ -33,6 +35,22 @@ export default class GameWebSocket {
         store.commit('messages/setMessage', json.localizedMessage)
       }
     }
+
+    this.webSocket.onclose = () => {
+      if (this.active) {
+        console.warn('Lost WebSocket connexion, try to reconnect…')
+        setTimeout(() => {
+          this.connect()
+        }, 1000)
+      }
+    }
+
+    this.webSocket.onerror = (error) => {
+      console.error('WebSocket encountered an error: ', error, ' → Closing socket.')
+      if (this.webSocket) {
+        this.webSocket.close()
+      }
+    }
   }
 
   playTurn (x: number, y: number, vertical: boolean) {
@@ -51,7 +69,9 @@ export default class GameWebSocket {
   }
 
   leave () {
+    console.log('leave')
     if (this.webSocket) {
+      this.active = false
       this.webSocket.close()
     }
   }
