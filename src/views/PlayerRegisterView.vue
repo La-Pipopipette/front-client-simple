@@ -8,8 +8,8 @@
         <v-card tile>
           <v-card-title>Bienvenue&nbsp;!</v-card-title>
           <v-form
-            ref="form"
             v-model="valid"
+            @submit.prevent="register"
           >
             <v-card-text>
               <v-text-field
@@ -26,7 +26,7 @@
                 :disabled="!valid"
                 color="success"
                 class="mr-4"
-                @click="register"
+                type="submit"
               >
                 Jouer !
               </v-btn>
