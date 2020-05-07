@@ -16,7 +16,7 @@ export const getters = {
 export const actions = {}
 
 export const mutations = {
-  setUser (state: any, user: UserServer) {
+  setUser (state: User, user: UserServer) {
     state.id = user.id
     state.name = user.name
     state.jwt = user.jwt

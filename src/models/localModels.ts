@@ -41,7 +41,14 @@ export interface Game {
   lastPlayedTurn: Turn|null;
 }
 
+export interface Message {
+  text: string;
+  type: string;
+  show: boolean;
+}
+
 export interface StoreType {
   game: Game;
+  message: Message;
   player: User;
 }
