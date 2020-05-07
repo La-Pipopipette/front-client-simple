@@ -47,7 +47,7 @@ export interface Message {
   show: boolean;
 }
 
-export interface StoreType {
+export interface State {
   game: Game;
   message: Message;
   player: User;

@@ -32,6 +32,9 @@ import { mapGetters } from 'vuex'
   components: { SimpleGameStatus, SimpleGamePlayers, SimpleGameBoard }
 })
 export default class SimpleGameView extends Vue {
+  // From vuex mappings
+  gameDefined!: string
+
   mounted () {
     GameWebSocket.init(this.$route.params.id)
     GameWebSocket.getInstance().connect()
