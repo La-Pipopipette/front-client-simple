@@ -9,17 +9,20 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'PlayerRegister',
-    component: PlayerRegisterView
+    component: PlayerRegisterView,
+    props: (route) => ({ gameIdFromNavigation: route.query.gameId })
   },
   {
     path: '/game/simple',
     name: 'GameManagement',
-    component: () => import(/* webpackChunkName: "GameManagementView" */ '@/views/GameManagementView.vue')
+    component: () => import(/* webpackChunkName: "GameManagementView" */ '@/views/GameManagementView.vue'),
+    meta: { requiresUser: true }
   },
   {
     path: '/game/simple/:id',
     name: 'SimpleGameView',
-    component: () => import(/* webpackChunkName: "SimpleGameView" */ '@/views/SimpleGameView.vue')
+    component: () => import(/* webpackChunkName: "SimpleGameView" */ '@/views/SimpleGameView.vue'),
+    meta: { requiresUser: true }
   },
   {
     path: '*',
@@ -35,8 +38,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.name !== 'PlayerRegister' && to.name !== 'NotFoundView' && !store.getters['player/userDefined']) {
-    next({ name: 'PlayerRegister' })
+  if (to.meta.requiresUser && !store.getters['player/userDefined']) {
+    next({ name: 'PlayerRegister', query: { gameId: to.params.id } })
   } else {
     next()
   }

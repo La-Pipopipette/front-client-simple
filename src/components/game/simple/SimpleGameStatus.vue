@@ -9,15 +9,19 @@
         tile
         dense
       >
-        En attente de joueurs… ({{ nbPlayersJoined }} / {{ nbPlayers }})
+        En attente de joueurs … ({{ nbPlayersJoined }} / {{ nbPlayers }})
       </v-alert>
+      <v-card-title>Partager la partie</v-card-title>
       <v-card-text>
-        <v-text-field
-          :value="$route.params.id"
-          label="Identifiant de partie"
-          readonly
-        />
-        <p>Communiquez l'identifiant de partie aux autres joueurs pour qu’ils rejoignent.</p>
+        <v-btn @click="copyLink">
+          <v-icon left>
+            fa-copy
+          </v-icon>
+          Copier le lien
+        </v-btn>
+      </v-card-text>
+      <v-card-text>
+        Invitez les autres joueurs à ouvrir cette adresse dans leur navigateur pour rejoindre cette partie.
       </v-card-text>
     </template>
     <template v-if="finished">
@@ -65,7 +69,7 @@
         v-else
         @click="newGame"
       >
-        Quitter la partie
+        Quitter
         <v-icon right>
           fa-sign-out-alt
         </v-icon>
@@ -111,6 +115,12 @@ export default class SimpleGamePlayers extends Vue {
     GameWebSocket.getInstance().leave()
     store.commit('game/reset')
     this.$router.push({ name: 'GameManagement' })
+  }
+
+  copyLink () {
+    const path = this.$router.resolve({ name: 'SimpleGameView', params: { id: this.$route.params.id } }).href
+    const fullPath = `${window.location.origin}${path}`
+    navigator.clipboard.writeText(fullPath)
   }
 }
 </script>

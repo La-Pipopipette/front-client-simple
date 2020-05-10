@@ -9,7 +9,7 @@
           <v-card-title>Bienvenue&nbsp;!</v-card-title>
           <v-form
             v-model="valid"
-            @submit.prevent="register"
+            @submit.prevent="play"
           >
             <v-card-text>
               <v-text-field
@@ -56,7 +56,10 @@
               <li>Soit quand le plateau est plein.</li>
             </ul>
             <p>Exemple de partie sur un plateau de 2 x 2&nbsp;:</p>
-            <v-img max-width="300px" src="../assets/game-example.svg" />
+            <v-img
+              max-width="300px"
+              src="../assets/game-example.svg"
+            />
             <p><em>(Image <a href="https://commons.wikimedia.org/wiki/File:Dots-and-boxes.svg">CC BY-SA Tiger66</a>)</em></p>
           </v-card-text>
         </v-card>
@@ -66,11 +69,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import playerHttpEndpoint from '@/io/PlayerHttpEndpoint'
 
 @Component
 export default class PlayerRegisterView extends Vue {
+  @Prop({ default: '' })
+  gameIdFromNavigation!: string
+
   nameInput = ''
   nameRules = [
     (v: string) => !!v || 'Le nom est obligatoire',
@@ -79,9 +85,13 @@ export default class PlayerRegisterView extends Vue {
 
   valid = false
 
-  async register () {
+  async play () {
     await playerHttpEndpoint.createPlayer(this.nameInput)
-    this.$router.push({ name: 'GameManagement' })
+    if (this.gameIdFromNavigation) {
+      this.$router.push({ name: 'SimpleGameView', params: { id: this.gameIdFromNavigation } })
+    } else {
+      this.$router.push({ name: 'GameManagement' })
+    }
   }
 }
 </script>
